@@ -1,5 +1,6 @@
 package ProjetoLua.model;
 
+import ProjetoLua.dto.pagamento.CadastrarPagamentoDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,4 +29,15 @@ public class Pagamento {
 
     @OneToOne(mappedBy = "pagamento", cascade = CascadeType.ALL)
     private Historico historico;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_USUARIO")
+    private Usuario usuario;
+
+    public Pagamento(CadastrarPagamentoDto pagamentoDto, Usuario usuario){
+        numeroCartao = pagamentoDto.numeroCartao();
+        senha = pagamentoDto.senha();
+        validade = pagamentoDto.validade();
+        this.usuario = usuario;
+    }
 }

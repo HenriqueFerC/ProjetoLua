@@ -1,5 +1,7 @@
 package ProjetoLua.model;
 
+import ProjetoLua.dto.carrinho.AtualizarCarrinhoDto;
+import ProjetoLua.dto.carrinho.CadastrarCarrinhoDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "TB_HISTORICO")
+@Table(name = "TB_CARRINHO")
 public class Carrinho {
 
     @Id
@@ -28,6 +30,15 @@ public class Carrinho {
     @OneToOne(mappedBy = "carrinho", cascade = CascadeType.ALL)
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL)
-    private List<Produto> produtos;
+    public void atualizarCarrinho(AtualizarCarrinhoDto carrinhoDto){
+        quantidade = carrinhoDto.quantidade();
+        valor = carrinhoDto.valor();
+    }
+
+    public Carrinho(CadastrarCarrinhoDto carrinhoDto, Usuario usuario){
+        quantidade = carrinhoDto.quantidade();
+        valor = carrinhoDto.valor();
+        this.usuario = usuario;
+    }
+
 }

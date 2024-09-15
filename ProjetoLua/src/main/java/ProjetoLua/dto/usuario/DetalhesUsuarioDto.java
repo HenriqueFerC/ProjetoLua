@@ -1,4 +1,9 @@
 package ProjetoLua.dto.usuario;
 
-public record DetalhesUsuarioDto() {
+import ProjetoLua.model.Usuario;
+
+public record DetalhesUsuarioDto(String nome, String login) {
+    public DetalhesUsuarioDto(Usuario usuario){
+        this(usuario.getNome(), usuario.getLogin());
+    }
 }

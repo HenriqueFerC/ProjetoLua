@@ -1,4 +1,10 @@
 package ProjetoLua.dto.historico;
 
-public record CadastrarHistoricoDto() {
+import jakarta.validation.constraints.NotNull;
+
+public record CadastrarHistoricoDto(
+        @NotNull(message = "Valor Total não pode ser nulo!")
+        double valorTotal
+
+) {
 }

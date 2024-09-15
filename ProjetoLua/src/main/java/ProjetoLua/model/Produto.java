@@ -1,10 +1,14 @@
 package ProjetoLua.model;
 
 
+import ProjetoLua.dto.produto.AtualizarProdutoDto;
+import ProjetoLua.dto.produto.CadastrarProdutoDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter@Setter
 @NoArgsConstructor
@@ -27,11 +31,22 @@ public class Produto {
     @Column(name = "DESCRICAO")
     private String descricao;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_HISTORICO")
-    private Historico historico;
+    @ManyToMany(mappedBy = "produtos",cascade = CascadeType.ALL)
+    private List<Historico> historicos;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_CARRINHO")
-    private Carrinho carrinho;
+    public void adicionarHistorico(Historico historico){
+        historicos.add(historico);
+    }
+
+    public Produto(CadastrarProdutoDto produtoDto){
+        nome = produtoDto.nome();
+        valor = produtoDto.valor();
+        descricao = produtoDto.descricao();
+    }
+
+    public void atualizarProduto(AtualizarProdutoDto produtoDto){
+        nome = produtoDto.nome();
+        valor = produtoDto.valor();
+        descricao = produtoDto.descricao();
+    }
 }
