@@ -57,4 +57,7 @@ public class Historico {
         produtos.add(produto);
     }
 
+    public void adicionarProdHist(Produto produto){
+        produtos.add(produto);
+    }
 }

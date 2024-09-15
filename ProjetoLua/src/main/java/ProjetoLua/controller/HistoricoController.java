@@ -7,6 +7,7 @@ import ProjetoLua.dto.pagamento.ListagemPagamentoDto;
 import ProjetoLua.dto.produto.DetalhesProdutoDto;
 import ProjetoLua.dto.usuario.DetalhesUsuarioDto;
 import ProjetoLua.repository.HistoricoRepository;
+import ProjetoLua.repository.ProdutoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +35,26 @@ public class HistoricoController {
     @Autowired
     private HistoricoRepository historicoRepository;
 
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
+    @PostMapping("{idHistorico}/produto/{idProduto}")
+    @Operation(summary = "Cadastro de Historico relacionado a Pedido",
+            description = "Cadastra um id do historico com um id de pedido")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Cadastro com Sucesso", content =
+    @Content(schema = @Schema(implementation = DetalhesHistoricoDto.class), mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "Não Autorizado ou Token Inválido", content =
+                    { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos (id do historico ou id do produto)")})
+    @Transactional
+    public ResponseEntity<DetalhesHistoricoDto> casastrarFuncCliente(@PathVariable("idHistorico") Long idHistorico, @PathVariable("idProduto") Long idProduto, UriComponentsBuilder uriBuilder){
+        var historico = historicoRepository.getReferenceById(idHistorico);
+        var produto = produtoRepository.getReferenceById(idProduto);
+        historico.adicionarProdHist(produto);
+        produto.adicionarHistProd(historico);
+        var url = uriBuilder.path("{idHistorico}/produto/{idProduto}").buildAndExpand(historico.getId(), produto.getId()).toUri();
+        return ResponseEntity.created(url).body(new DetalhesHistoricoDto(historico));
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<DetalhesHistoricoDto> buscarPorId(@PathVariable("id") Long id) {

@@ -49,4 +49,8 @@ public class Produto {
         valor = produtoDto.valor();
         descricao = produtoDto.descricao();
     }
+
+    public void adicionarHistProd(Historico historico){
+        historicos.add(historico);
+    }
 }
